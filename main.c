@@ -49,8 +49,8 @@ void printHash(const uint8_t *p, unsigned int size) {
     printf("\n");
 }
 
-int readFile(char fileName[], char *string, long int *fileSize) {
-    FILE* fd;
+int readFile(char fileName[], char **string, long int *fileSize) {
+    FILE *fd;
 
     fd = fopen(fileName, "r");
     if (fd == NULL)
@@ -60,8 +60,8 @@ int readFile(char fileName[], char *string, long int *fileSize) {
     *fileSize = ftell(fd);
     rewind(fd);
     
-    string = (char*)malloc(*fileSize + 1);
-    fread(string, *fileSize, 1, fd);
+    *string = (char *)malloc(*fileSize);
+    fread((*string), *fileSize, 1, fd);
 
     fclose(fd);
     return 0;
@@ -84,10 +84,6 @@ int main(int argc, char* argv[]) {
     if (error) {
         printf("Error: couldn't open %s\n", arguments.fileName);
         return 1;
-    }
-
-    for(int i = 0; i < fileSize; i++) {
-        printf("%c", fileContents[i]);
     }
 
     hashLen = (strcmp(arguments.algorithm, "MD5") == 0) ? 16 : 32;
